@@ -3,7 +3,11 @@ const morgan = require('morgan')
 
 const app = express()
 
-app.use(morgan('tiny'))
+// Define custom token for morgan in order to log POST request data on terminal.
+morgan.token('data', function (req, res) { return JSON.stringify(req.body) })
+
+// Take middleware morgan in use and set desired log format (including POST req data)
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 app.use(express.json())
 
