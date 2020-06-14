@@ -1,7 +1,7 @@
 {
-  "name": "fullstackopen2020-osa3",
+  "name": "puhelinluettelon-backend",
   "version": "0.0.1",
-  "description": "\"Full Stack Open 2020, osa 3\"",
+  "description": "\"Full Stack Open 2020, osa 3: Puhelinluettelon BE\"",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
