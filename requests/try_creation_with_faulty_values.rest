@@ -23,3 +23,15 @@ Content-Type: application/json
 # Try creation without name and number 
 POST http://localhost:3001/api/persons
 Content-Type: application/json
+
+
+### 
+
+# Try creation with name that is already on phonebook 
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Kimi Räikkönen",
+  "number": "+358 50 987 6543"
+}

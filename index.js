@@ -70,16 +70,16 @@ const generateId = () => {
   const max = 10000
   
   let newId = null
-  let person = null
+  let resultFound = null
   
   // Draw a new id until one is found that is not in use. 
   do {
-    // Generating a random integer between two values, inclusive
+    // Generating a random integer between two values, inclusive.
     newId = Math.floor(Math.random() * (max - min + 1)) + min;
-    // Confirm that the drawn id is not already in use
-    person = persons.find(person => person.id === newId)
+    // Confirm that the drawn id is not already in use.
+    resultFound = persons.find(person => person.id === newId)
   }
-  while(person)
+  while(resultFound)
 
   return newId
 }
@@ -87,19 +87,29 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+  // Confirm that all mandatory fields have been given.
   if (!body.name || !body.number) {
     return response.status(400).json({
-      error: 'malformed request'
+      error: 'All fields must be filled.'
     })
   }
 
-  const person = {
+  // Confirm that the given name is not on the phonebook already.
+  const resultFound = persons.find(person => (person.name).toLowerCase() === (body.name).toLowerCase())
+  if (resultFound) {
+    return response.status(400).json({
+      error: 'Name must be unique.'
+    })
+  }
+
+  // Create new person object with given details.
+  const newPerson = {
     name: body.name,
     number: body.number,
     id: generateId(),
   }
 
-  persons = persons.concat(person)
+  persons = persons.concat(newPerson)
 
   response.json(persons)
 }) 
