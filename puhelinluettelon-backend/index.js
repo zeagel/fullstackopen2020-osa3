@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 const app = express()
 
@@ -8,6 +9,10 @@ morgan.token('data', function (req, res) { return JSON.stringify(req.body) })
 
 // Take middleware morgan in use and set desired log format (including POST req data)
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
+
+// Take middleware cors in use and allow requests from 
+// all origins to express routes of this project (for now).
+app.use(cors())
 
 app.use(express.json())
 
