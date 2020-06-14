@@ -3,5 +3,10 @@
 
 ###
 
-# Delete record defined by personId 
+# Delete record defined by personId (localhost)
 DELETE http://localhost:3001/api/persons/{{personId}}
+
+###
+
+# Delete record defined by personId (Heroku)
+DELETE https://frozen-dawn-63470.herokuapp.com/api/persons/{{personId}}

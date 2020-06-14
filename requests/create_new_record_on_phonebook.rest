@@ -1,7 +1,18 @@
 ### 
 
-# Create a record on the phonebook 
+# Create a record on the phonebook (localhost)
 POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Valtteri Bottas",
+  "number": "+358 44 987 5432"
+}
+
+### 
+
+# Create a record on the phonebook (Heroku)
+POST https://frozen-dawn-63470.herokuapp.com/api/persons
 Content-Type: application/json
 
 {
