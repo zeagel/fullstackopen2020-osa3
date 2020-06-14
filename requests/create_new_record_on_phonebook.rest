@@ -1,0 +1,10 @@
+### 
+
+# Create a record on the phonebook 
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Valtteri Bottas",
+  "number": "+98-555-1234"
+}

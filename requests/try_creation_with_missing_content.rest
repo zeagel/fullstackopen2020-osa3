@@ -1,0 +1,25 @@
+### 
+
+# Try creation without name 
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "number": "+358 44 123 4567"
+}
+
+### 
+
+# Try creation without number 
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Max Verstappen"
+}
+
+### 
+
+# Try creation without name and number 
+POST http://localhost:3001/api/persons
+Content-Type: application/json

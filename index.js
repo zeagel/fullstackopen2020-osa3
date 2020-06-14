@@ -64,6 +64,46 @@ app.delete('/api/persons/:id', (request, response) => {
   }
 })
 
+const generateId = () => {
+  // Id range definition
+  const min = 1
+  const max = 10000
+  
+  let newId = null
+  let person = null
+  
+  // Draw a new id until one is found that is not in use. 
+  do {
+    // Generating a random integer between two values, inclusive
+    newId = Math.floor(Math.random() * (max - min + 1)) + min;
+    // Confirm that the drawn id is not already in use
+    person = persons.find(person => person.id === newId)
+  }
+  while(person)
+
+  return newId
+}
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'malformed request'
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  }
+
+  persons = persons.concat(person)
+
+  response.json(persons)
+}) 
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
