@@ -14,6 +14,10 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :d
 // all origins to express routes of this project (for now).
 app.use(cors())
 
+// Utilize inbuild middleware 'build' of express in order to 
+// display static content of frontend.
+app.use(express.static('build'))
+
 app.use(express.json())
 
 let persons = [
