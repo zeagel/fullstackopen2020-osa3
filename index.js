@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 const app = express()
 
@@ -20,55 +22,33 @@ app.use(express.static('build'))
 
 app.use(express.json())
 
-let persons = [
-  {
-    name: "Arto Hellas",
-    number: "6789 557 999",
-    id: 1
-  },
-  {
-    name: "Dan Brown",
-    number: "77 88 99 112",
-    id: 2
-  },
-  {
-    name: "Kimi Räikkönen",
-    number: "+99-44-22-333",
-    id: 3
-  },
-  {
-    name: "Sebastian Vettel",
-    number: "+67-666-99-1111",
-    id: 4
-  }
-]
-
+// Display info
 app.get('/info', (request, response) => {
-  response.send(`
+  Person.find({}).then(persons => {
+    response.send(`
       <div>
         <p>Phonebook has info for ${ persons.length } people.</p>
         <p>${ new Date() }</p>
       </div>
-  `)
-})
-
-app.get('/api/persons', (request, response) => {
-  response.json(persons)
-})
-
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => {
-    return person.id === id
+    `)  
   })
-
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
 })
 
+// Display all persons from the phonebook
+app.get('/api/persons', (request, response) => {
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
+})
+
+// Find and display one person from the phonebook
+app.get('/api/persons/:id', (request, response) => {
+  Person.findById(request.params.id).then(person => {
+    response.json(person)
+  })
+})
+
+/*
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   const person = persons.find(person => person.id === id)
@@ -129,9 +109,10 @@ app.post('/api/persons', (request, response) => {
   persons = persons.concat(newPerson)
 
   response.json(persons)
-}) 
+})
+*/ 
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
