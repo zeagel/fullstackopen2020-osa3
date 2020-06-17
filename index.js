@@ -80,37 +80,25 @@ const generateId = () => {
 
   return newId
 }
+*/
 
+// Add new person to phonebook
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  // Confirm that all mandatory fields have been given.
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: 'All fields must be filled.'
-    })
+  if (body.name === undefined && body.number === undefined) {
+    return response.status(400).json({error: 'content missing'})
   }
 
-  // Confirm that the given name is not on the phonebook already.
-  const resultFound = persons.find(person => (person.name).toLowerCase() === (body.name).toLowerCase())
-  if (resultFound) {
-    return response.status(400).json({
-      error: 'Name must be unique.'
-    })
-  }
-
-  // Create new person object with given details.
-  const newPerson = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  }
+  })
 
-  persons = persons.concat(newPerson)
-
-  response.json(persons)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
-*/ 
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
