@@ -48,39 +48,16 @@ app.get('/api/persons/:id', (request, response) => {
   })
 })
 
-/*
+// Delete person from the phonebook
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  
-  if (person) {
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
-  } else {
-    response.status(404).end()
-  }
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => {
+      console.log(error)
+    })
 })
-
-const generateId = () => {
-  // Id range definition
-  const min = 1
-  const max = 10000
-  
-  let newId = null
-  let resultFound = null
-  
-  // Draw a new id until one is found that is not in use. 
-  do {
-    // Generating a random integer between two values, inclusive.
-    newId = Math.floor(Math.random() * (max - min + 1)) + min;
-    // Confirm that the drawn id is not already in use.
-    resultFound = persons.find(person => person.id === newId)
-  }
-  while(resultFound)
-
-  return newId
-}
-*/
 
 // Add new person to phonebook
 app.post('/api/persons', (request, response) => {
