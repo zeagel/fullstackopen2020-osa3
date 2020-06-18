@@ -85,6 +85,24 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
+// Update number for existing person
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+  
+  console.log(`Update person ${body.name}, add new number ${body.number}`)
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
 // Define error handling in middleware components
 
 const unknownEndpoint = (request, response) => {
