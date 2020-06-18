@@ -1,0 +1,14 @@
+### 
+
+# Search person with valid id that exists
+GET http://localhost:3001/api/persons/5ee910c44d755936d814075e
+
+### 
+
+# Search person with valid id that does not exist
+GET http://localhost:3001/api/persons/5ee910c34d745936d814065e
+
+### 
+
+# Search person with invalid id
+GET http://localhost:3001/api/persons/foobar
