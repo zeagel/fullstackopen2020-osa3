@@ -1,3 +1,5 @@
+/* global process */
+
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
@@ -7,13 +9,13 @@ const Person = require('./models/person')
 const app = express()
 
 // Define custom token for morgan in order to log POST request data on terminal.
-morgan.token('data', function (req, res) { return JSON.stringify(req.body) })
+morgan.token('data', function (req, _res) { return JSON.stringify(req.body) })
 
-// Take middleware cors in use and allow requests from 
+// Take middleware cors in use and allow requests from
 // all origins to express routes of this project (for now).
 app.use(cors())
 
-// Utilize inbuild middleware 'build' of express in order to 
+// Utilize inbuild middleware 'build' of express in order to
 // display static content of frontend.
 app.use(express.static('build'))
 
@@ -23,19 +25,19 @@ app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 // Display info
-app.get('/info', (request, response) => {
+app.get('/info', (_request, response) => {
   Person.find({}).then(persons => {
     response.send(`
       <div>
         <p>Phonebook has info for ${ persons.length } people.</p>
         <p>${ new Date() }</p>
       </div>
-    `)  
+    `)
   })
 })
 
 // Display all persons from the phonebook
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (_request, response) => {
   Person.find({}).then(persons => {
     response.json(persons)
   })
@@ -44,21 +46,21 @@ app.get('/api/persons', (request, response) => {
 // Find and display one person from the phonebook
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
-  .then(person => {
-    if (person) {
-      response.json(person)
-    } else {
-      console.log("no person with given id")
-      response.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        console.log('no person with given id')
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 // Delete person from the phonebook
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(_result => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -83,7 +85,7 @@ app.post('/api/persons', (request, response, next) => {
 // Update number for existing person
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
-  
+
   console.log(`Update person ${body.name}, add new number ${body.number}`)
 
   const person = {
@@ -113,28 +115,28 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'Input Error: malformatted id' })
   } else if (
-      error.name === 'ValidationError' && 
-      error.message.includes('unique')
+    error.name === 'ValidationError' &&
+    error.message.includes('unique')
   ) {
-    return response.status(400).send({ error: 'Input Error: name must be unique!' })  
+    return response.status(400).send({ error: 'Input Error: name must be unique!' })
   } else if (
-      error.name === 'ValidationError' && 
-      error.message.includes('required')
+    error.name === 'ValidationError' &&
+    error.message.includes('required')
   ) {
-    return response.status(400).send({ error: 'Input Error: name and number are required' })  
+    return response.status(400).send({ error: 'Input Error: name and number are required' })
   } else if (
-      error.name === 'ValidationError' && 
-      error.message.includes('name') && 
-      error.message.includes('shorter')
-  ) {
-    return response.status(400).send({ error: 'Input Error: name is too short!' })  
-  } else if (
-    error.name === 'ValidationError' && 
-    error.message.includes('number') && 
+    error.name === 'ValidationError' &&
+    error.message.includes('name') &&
     error.message.includes('shorter')
-) {
-  return response.status(400).send({ error: 'Input Error: number is too short!' })  
-}
+  ) {
+    return response.status(400).send({ error: 'Input Error: name is too short!' })
+  } else if (
+    error.name === 'ValidationError' &&
+    error.message.includes('number') &&
+    error.message.includes('shorter')
+  ) {
+    return response.status(400).send({ error: 'Input Error: number is too short!' })
+  }
 
   next(error)
 }
