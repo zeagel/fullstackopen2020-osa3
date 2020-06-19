@@ -65,24 +65,19 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 // Add new person to phonebook
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
-
-  console.log(`${body.name} - ${typeof body.name}`)
-  console.log(`${body.number} - ${typeof body.number}`)
-
-  if (body.name === undefined || body.number === undefined) {
-    return response.status(400).json({error: 'content missing'})
-  }
 
   const person = new Person({
     name: body.name,
     number: body.number,
   })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+  person.save()
+    .then(savedPerson => {
+      response.json(savedPerson.toJSON())
+    })
+    .catch(error => next(error))
 })
 
 // Update number for existing person
@@ -117,6 +112,10 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError' && error.message.includes('unique')) {
+    return response.status(400).send({ error: 'name must be unique' })  
+  } else if (error.name === 'ValidationError' && error.message.includes('required')) {
+    return response.status(400).send({ error: 'name and number are required' })  
   }
 
   next(error)
