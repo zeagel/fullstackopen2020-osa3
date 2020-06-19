@@ -108,20 +108,38 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
+  //console.error(error.message)
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError' && error.message.includes('unique')) {
-    return response.status(400).send({ error: 'name must be unique' })  
-  } else if (error.name === 'ValidationError' && error.message.includes('required')) {
-    return response.status(400).send({ error: 'name and number are required' })  
-  }
+    return response.status(400).send({ error: 'Input Error: malformatted id' })
+  } else if (
+      error.name === 'ValidationError' && 
+      error.message.includes('unique')
+  ) {
+    return response.status(400).send({ error: 'Input Error: name must be unique!' })  
+  } else if (
+      error.name === 'ValidationError' && 
+      error.message.includes('required')
+  ) {
+    return response.status(400).send({ error: 'Input Error: name and number are required' })  
+  } else if (
+      error.name === 'ValidationError' && 
+      error.message.includes('name') && 
+      error.message.includes('shorter')
+  ) {
+    return response.status(400).send({ error: 'Input Error: name is too short!' })  
+  } else if (
+    error.name === 'ValidationError' && 
+    error.message.includes('number') && 
+    error.message.includes('shorter')
+) {
+  return response.status(400).send({ error: 'Input Error: number is too short!' })  
+}
 
   next(error)
 }
 
-// Handling of malformatted ids
+// Handling of catched errors
 app.use(errorHandler)
 
 const PORT = process.env.PORT

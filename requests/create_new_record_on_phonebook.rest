@@ -11,6 +11,28 @@ Content-Type: application/json
 
 ### 
 
+# Create new person with too short name (localhost)
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Jo",
+  "number": "+358 123 999 876"
+}
+
+### 
+
+# Create new person with too short number (localhost)
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Joe",
+  "number": "1234567"
+}
+
+### 
+
 # Create a record on the phonebook (Heroku)
 POST https://frozen-dawn-63470.herokuapp.com/api/persons
 Content-Type: application/json
